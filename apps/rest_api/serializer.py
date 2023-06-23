@@ -5,4 +5,4 @@ from apps.rest_api.models import Books
 class BooksSerializer(serializers.ModelSerializer):
     class Meta:
         model = Books
-        fields = ['title', 'author', 'price', 'email']
+        fields = ['id', 'title', 'author', 'price', 'email']
