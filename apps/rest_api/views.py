@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.viewsets import ViewSet, ViewSetMixin, GenericViewSet, ModelViewSet
 from apps.rest_api.models import Books
 # from models import Books
@@ -9,7 +8,8 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 # Create your views here.
 
@@ -28,9 +28,21 @@ from rest_framework.viewsets import ModelViewSet
 #             return JsonResponse(serializer.data, status=201)
 #         return JsonResponse(serializer.errors, status=404)
 
+
 class BooksViewSet(GenericViewSet):
     serializer_class = BooksSerializer
     queryset = Books.objects.all()
+
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['id'],
+            properties={
+                'id': openapi.Schema(type=openapi.TYPE_STRING),
+            },
+        ),
+        operation_description='uninstall'
+    )
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -38,6 +50,13 @@ class BooksViewSet(GenericViewSet):
         serializer.save()
 
         return JsonResponse(serializer.data, safe=False)
+
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter('date_from', openapi.IN_QUERY, required='date_from', type=openapi.TYPE_STRING),
+            openapi.Parameter('date_to', openapi.IN_QUERY, required='date_to', type=openapi.TYPE_STRING)
+        ]
+    )
 
     def list(self, request):
         serializer = self.get_serializer(self.get_queryset(), many=True)
@@ -53,6 +72,7 @@ class BooksViewSet(GenericViewSet):
         Books.objects.filter(email=user_object.email).delete()
         user_object.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class BookModelViewSet(ModelViewSet):
     serializer_class = BooksSerializer
