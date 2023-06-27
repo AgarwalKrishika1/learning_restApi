@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ViewSet, ViewSetMixin, GenericViewSet, ModelViewSet
-from apps.rest_api.models import Books
+from apps.rest_api.models import Books, Album, Runner
 # from models import Books
-from apps.rest_api.serializer import BooksSerializer
+from apps.rest_api.serializer import BooksSerializer, AlbumSerializer, RunnerSerializer
 from django.http import JsonResponse
 from rest_framework.parsers import JSONParser
 from rest_framework.viewsets import GenericViewSet
@@ -77,3 +77,11 @@ class BooksViewSet(GenericViewSet):
 class BookModelViewSet(ModelViewSet):
     serializer_class = BooksSerializer
     queryset = Books.objects.all()
+
+class AlbumModelViewSet(ModelViewSet):
+    serializer_class = AlbumSerializer
+    queryset = Album.objects.all()
+
+class RunnerModelViewSet(ModelViewSet):
+    serializer_class = RunnerSerializer
+    queryset = Runner.objects.all()
